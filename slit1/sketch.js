@@ -1,7 +1,7 @@
 let capture,
     increment = -1,
-    fr = 24,
-    size = 8,
+    fr = 36,
+    size = 6,
     history_frames = [],
     fullImage;
 
