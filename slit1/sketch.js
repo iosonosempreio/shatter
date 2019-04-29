@@ -1,7 +1,7 @@
 let capture,
     increment = -1,
-    fr = 36,
-    size = 6,
+    fr = 60,
+    size = 10,
     history_frames = [],
     fullImage;
 
@@ -12,6 +12,7 @@ function preload(){
 function setup() {
   // put setup code here
   createCanvas(1280, 720);
+  pixelDensity(1);
 
   background('BLACK');
 
@@ -48,7 +49,7 @@ function setup() {
 
 function draw() {
 
-  let pink = color(255, 102, 204);
+  background('black')
 
   if (capture.loadedmetadata) {
 
@@ -61,19 +62,22 @@ function draw() {
     if (history_frames.length > height/size) {
       let removed_frame = history_frames.shift();
     }
+    // else {
+    //   console.log('loading... ', history_frames.length, '/', height/size);
+    // }
 
     history_frames[history_frames.length-1].loadPixels();
 
-    console.log(history_frames.length);
+    // console.log(history_frames.length);
 
 
     // handle full image
     fullImage.loadPixels();
 
-    history_frames.forEach(function(frame, count) {
-      // console.log(count);
-      // console.log('frame', frame.pixels.length)
-      // console.log('full image', fullImage.pixels.length);
+    // history_frames = history_frames.reverse();
+
+    for (var count = 0; count < history_frames.length; count++) {
+      let frame = history_frames[count]
       let offset = count * width * size * 4;
 
       for (var i = offset; i < offset + size*4*width; i += 4) {
@@ -82,8 +86,15 @@ function draw() {
           fullImage.pixels[i + 2] = frame.pixels[i + 2];
           fullImage.pixels[i + 3] = frame.pixels[i + 3];
       }
+    }
 
-    });
+    // history_frames.forEach(function(frame, count) {
+    //   // console.log(count);
+    //   // console.log('frame', frame.pixels.length)
+    //   // console.log('full image', fullImage.pixels.length);
+    //
+    //
+    // });
 
     fullImage.updatePixels();
 
@@ -92,6 +103,10 @@ function draw() {
     }
 
   }
+  fill('white');
+  text(history_frames.length+'/'+height/size, 20, 20);
+  text(frameRate(), 20, 40);
+
 
 }
 
