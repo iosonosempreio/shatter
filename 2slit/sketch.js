@@ -1,7 +1,7 @@
 let canvas,
     capture,
     increment = -1,
-    size = 20,
+    size = 10,
     history_frames = [],
     fullImage,
     direction = 'top-down',
