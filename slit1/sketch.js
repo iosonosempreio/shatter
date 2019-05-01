@@ -1,9 +1,11 @@
 let capture,
     increment = -1,
-    fr = 60,
+    fr = 24,
     size = 10,
     history_frames = [],
     fullImage;
+
+let www = 1280, hhh = 720;
 
 function preload(){
   // put preload code here
@@ -11,18 +13,18 @@ function preload(){
 
 function setup() {
   // put setup code here
-  createCanvas(1280, 720);
-  pixelDensity(1);
+  createCanvas(www, hhh);
+  // pixelDensity(1);
 
   background('BLACK');
 
-  frameRate(fr)
+  frameRate(fr);
 
   var constraints = {
     video: {
       mandatory: {
-        minWidth: 1280,
-        minHeight: 720
+        minWidth: www,
+        minHeight: hhh
       },
       optional: [{ maxFrameRate: fr }]
     },
@@ -33,7 +35,7 @@ function setup() {
     console.log(stream);
   });
 
-  capture.hide();
+  // capture.hide();
 
   fullImage = createImage(width, height);
 
@@ -98,14 +100,17 @@ function draw() {
 
     fullImage.updatePixels();
 
+    fill('white');
+
     if (history_frames.length == height/size) {
       image(fullImage, 0, 0, width, height);
+      text(frameRate(), 20, 40);
+    } else {
+      fill('white');
+      text(history_frames.length+'/'+height/size, 20, 20);
     }
 
   }
-  fill('white');
-  text(history_frames.length+'/'+height/size, 20, 20);
-  text(frameRate(), 20, 40);
 
 
 }
