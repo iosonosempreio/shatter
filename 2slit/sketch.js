@@ -1,11 +1,15 @@
 let canvas,
+    desiredFrameRate = 60,
+    info = false,
     capture,
     increment = -1,
-    size = 10,
+    size = 7,
     history_frames = [],
     fullImage,
     direction = 'top-down',
-    ideal = [{w:1024,h:576},{w:1280,h:720},];
+    ideal = [{w:1024,h:576},{w:1280,h:720}];
+
+let from, to;
 
 
 function preload(){
@@ -18,14 +22,17 @@ function setup() {
     video: {
       width: { min: 360, ideal: ideal[1].w, max: 1280 },
       height: { min: 202, ideal: ideal[1].h, max: 720 },
-      frameRate: { min: 12, ideal: 24, max: 24 }
+      frameRate: { min: 24, ideal: 60, max: 60 }
     }
   }
   capture = createCapture(constraints, function(stream) {
     console.log(stream);
   });
   capture.hide();
-  frameRate(60)
+  frameRate(desiredFrameRate)
+
+  from = color(255, 87, 34);
+  to = color(156, 204, 101);
 }
 
 function draw() {
@@ -95,16 +102,30 @@ function draw() {
 
 
       fullImage.updatePixels();
+      push();
+      translate(width,0);
+      scale(-1.0,1.0);    // flip x-axis backwards
       image(fullImage, 0, 0, width, height);
+      pop();
     }
 
   }
 
-  fill('white');
-  textSize(36);
-  stroke('black');
-  strokeWeight(4)
-  text(width+'x'+height+' - '+round(frameRate())+' - '+history_frames.length+'/'+height/size, 10, 36);
+  if (info) {
+
+    // line
+    fill(lerpColor(from, to, (frameRate())/60));
+    noStroke();
+    let rw = map(frameRate(), 0, desiredFrameRate, 0, width);
+    rect(0, 0, rw, 3);
+
+    // text
+    fill('white');
+    textSize(36);
+    stroke('black');
+    strokeWeight(4);
+    text(width+'x'+height+' - '+round(frameRate())+' - '+history_frames.length+'/'+height/size, 10, 36);
+  }
 
 }
 
@@ -113,7 +134,7 @@ function keyPressed() {
     direction = 'bottom-up';
   } else if (keyCode === DOWN_ARROW) {
     direction = 'top-down';
-  } else {
-    //
+  } else if (keyCode === 73){
+    info = !info;
   }
 }
